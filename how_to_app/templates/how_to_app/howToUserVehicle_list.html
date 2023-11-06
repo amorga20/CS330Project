@@ -1,0 +1,16 @@
+{% extends 'how_to_app/base_template.html' %}
+
+{% block content %}
+<h1>Model List</h1>
+{% if howtouservehicle_list %}
+<ul>
+{% for vehicle in howtouservehicle_list %}
+<li>
+<a href="{{ vehcile.get_absolute_url }}">{{ vehicle.model }}</a>
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>There are no models registered.</p>
+{% endif %}
+{% endblock %}

@@ -1,13 +1,9 @@
 from django.forms import ModelForm
-from .models import Project, Portfolio
+from .models import *
 
 #create class for project form
-class ProjectForm(ModelForm):
-    class Meta:
-        model = Project
-        fields =('title', 'description')
 
-class PortfolioForm(ModelForm):
+class VehicleForm(ModelForm):
     class Meta:
-        model = Portfolio
-        fields = ["title", "is_active", "about", "contact_email"]
+        model = HowToUserVehicle
+        fields = ["year", "make", "model"]
