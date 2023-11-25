@@ -1,5 +1,6 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+
 
 urlpatterns = [
 #path function defines a url pattern
@@ -8,6 +9,13 @@ urlpatterns = [
 # name='index' parameter is to dynamically create url
 # example in html <a href="{% url 'index' %}">Home</a>.
     path('', views.index, name='index'),
-    path('vehicle/', views.HowToUserVehicleListView.as_view(), name= 'vehicles'),
-    path('vehicle/<int:pk>', views.HowToUserVehicleDetailView.as_view(), name = 'vehicle-detail')
+    path('vehicle/', views.HowToUserVehicleListView.as_view(), name='vehicles'),
+    path('vehicle/<int:pk>', views.HowToUserVehicleDetailView.as_view(), name='vehicle-detail'),
+    # Delete
+    path("vehicle/<int:pk>/delete/", views.deleteProject, name="delete_project"),
+    # Update Project
+    path("vehicle/<int:pk>/update/", views.updateProject, name="update_project"),
+    #user accounts
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/register/', views.registerPage, name = 'register_page'),
 ]

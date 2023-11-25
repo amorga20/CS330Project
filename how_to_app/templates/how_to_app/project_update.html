@@ -1,0 +1,15 @@
+{% extends 'how_to_app/base_template.html' %}
+
+{% block content %}
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" name="Submit" class="btn btn-primary" value="Update Project">
+    <a class="btn btn-primary" href="{% url 'vehicles' %}" role="button">Back to
+        Vehicles</a>
+</form>
+
+{% endblock %}

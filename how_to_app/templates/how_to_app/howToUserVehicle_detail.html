@@ -1,9 +1,12 @@
 {% extends 'how_to_app/base_template.html' %}
 
 {% block content %}
-<h1>Vehicle{{ HowToUserVehcile.model }}</h1>
+<h1>Vehicle{{ vehicle.model }}</h1>
 
 <p><strong>Year:</strong> {{ HowToUserVehcile.year }}</p>
 <p><strong>Make:</strong> {{ HowToUserVehcile.make }}</p>
+
+<a href="{% url 'update_project' HowToUserVehcile.id %}" class="btn btn-primary">Update Project</a>
+<a href="{% url 'delete_project' project.id %}" class="btn btn-primary">Delete Project</a>
 
 {% endblock %}

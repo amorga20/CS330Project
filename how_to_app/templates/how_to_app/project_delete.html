@@ -1,0 +1,8 @@
+<h1>Confirm Deletion</h1>
+<p>Are you sure you want to delete the project {{ vehicle.model }}?</p>
+<form method="post" action="{% url 'delete_project' project.id %}">
+    {% csrf_token %}
+    <button type="submit">Confirm</button>
+    <a href="{% url 'portfolio-detail' project.portfolio.pk %}">Cancel</a>
+    <input type="hidden" name="confirm" value="yes">
+</form>
