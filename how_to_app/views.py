@@ -10,6 +10,8 @@ from django.contrib.auth.models import Group
 # Create your views here.
 def index(request):
 # Render index.html
+    vehicles = HowToUserVehicle.objects.all()
+    print("Current Vehicle How To's", vehicles)
     return render( request, 'how_to_app/index.html')
 
 class HowToUserVehicleListView(generic.ListView):
@@ -18,60 +20,62 @@ class HowToUserVehicleListView(generic.ListView):
 class HowToUserVehicleDetailView(generic.DetailView):
     model = HowToUserVehicle
 
-    def get_context_data(self, **kwargs):
-        context = super(HowToUserVehicleDetailView, self).get_context_data(**kwargs)
-        vehicle = HowToUserVehicle.objects.filter(id=self.object)
-        context["vehicle"] = vehicle
-        return context
+    #def get_context_data(self, **kwargs):
+        #context = super(HowToUserVehicleDetailView, self).get_context_data(**kwargs)
+        #vehicle = HowToUserVehicle.objects.filter(id=self.object)
+        #context["vehicle"] = vehicle
+        #return context
 
 # Def to create a project
-def createProject(request, id):
+def createProject(request):
     form = VehicleForm()
-    vehicle = vehicle.objects.get(pk=id)
+    #vehicle = HowToUser.objects.get(pk=howToUser_id)
 
     if request.method == "POST":
         # Create a new dictionary with form data and portfolio_id
         vehicle_data = request.POST.copy()
-        vehicle_data["vehicle_id"] = id
+        #vehicle_data["vehicle_id"] = howToUser_id
 
         form = VehicleForm(vehicle_data)
         if form.is_valid():
             # Save the form without committing to the database
             vehicle = form.save(commit=False)
             # Set the portfolio relationship
+            vehicle.howToUser = vehicle
             vehicle.save()
 
             # Redirect back to the portfolio detail page
-            return redirect("vehicle-detail", id)
+            return redirect("index")
 
     context = {"form": form}
     return render(request, "how_to_app/howToUser_form.html", context)
 
 
 # Def to delete a project
-def deleteProject(request, project_id):
+def deleteProject(request, pk):
     # Retrieve the project object or return a 404 response if it doesn't exist
-    project = get_object_or_404(Project, pk=project_id)
+    vehicle = get_object_or_404(HowToUserVehicle, id=pk)
 
     if request.method == "POST":
         if request.POST.get("confirm") == "yes":
             # If the request method is POST, it's a confirmation to delete
-            project.delete()
+            vehicle.delete()
 
             # Redirect to the portfolio page after deletion
-            return redirect("portfolio-detail", pk=project.portfolio.pk)
+            return redirect("vehicles")
 
         elif request.POST.get("cancel") == "yes":
             # If the user "cancel" the deletion then go back to the portfolio page
-            return redirect("portfolio-detail", pk=project.portfolio.pk)
+            return redirect("vehicle-detail", pk)
 
     # If the request method is not POST, render a confirmation page
-    return render(request, "portfolio_app/project_delete.html", {"project": project})
+    context = {"project": vehicle}
+    return render(request, "how_to_app/project_delete.html", context=context)
 
 
-def updateProject(request, id):
+def updateProject(request, pk):
     # Get the project object based on its primary key (project_id)
-    vehicle = get_object_or_404(HowToUserVehicle, pk=id)
+    vehicle = get_object_or_404(HowToUserVehicle, id=pk)
 
     # Check if the request method is POST
     if request.method == "POST":
@@ -82,7 +86,7 @@ def updateProject(request, id):
             # If the form is valid, save the changes to the project
             form.save()
             # Go back to the portfolio detail page
-            return redirect("vehicle-detail", pk=vehicle)
+            return redirect("vehicle-detail", pk)
     else:
         # If the request method is not POST, create a form with the project data
         form = VehicleForm(instance=vehicle)

@@ -11,6 +11,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('vehicle/', views.HowToUserVehicleListView.as_view(), name='vehicles'),
     path('vehicle/<int:pk>', views.HowToUserVehicleDetailView.as_view(), name='vehicle-detail'),
+    path('vehicle/create_project/', views.createProject, name='create_project'),
     # Delete
     path("vehicle/<int:pk>/delete/", views.deleteProject, name="delete_project"),
     # Update Project
