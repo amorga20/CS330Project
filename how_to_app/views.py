@@ -130,13 +130,13 @@ def registerPage(request):
 @allowed_users(allowed_roles=['user_role'])
 def userPage(request):
     users = request.user
-    form = StudentForm(instance= student)
-    print('Student', student)
-    portfolio = student.portfolio
-    print(portfolio)
+    form = HowToUserForm(instance= users)
+    print('User', users)
+    vehicle = users.vehicle
+    print(vehicle)
     if request.method == 'POST':
-        form = StudentForm(request.POST, request.FILES, instance=student)
+        form = HowToUserForm(request.POST, request.FILES, instance=users)
         if form.is_valid():
             form.save()
-    context = {'portfolios': portfolio, 'form':form}
-    return render(request, 'portfolio_app/user.html', context)
+    context = {'HowToUserVehicle': vehicle, 'form':form}
+    return render(request, 'how_to_app/user.html', context)
