@@ -1,0 +1,17 @@
+{% extends 'how_to_app/base_template.html' %}
+
+{% block content %}
+<h3>How to User Profile</h3>
+Welcome, {{user}}
+ <p><strong>Vehicle:{{user.howToUser.vehicle.model}}
+    <a class="btn btn-primary" href="{{user.howToUser.vehicle.get_absolute_url}}" role="button">View</a>
+
+<h3>User Information</h3>
+
+<form method="POST" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <input class="btn btn-primary" type="submit" name="Update">
+</form>
+</div>
+{% endblock %}

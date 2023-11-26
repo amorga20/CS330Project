@@ -6,6 +6,9 @@ from .models import *
 from .forms import *
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
+from .decorator import allowed_users
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 def index(request):
@@ -27,6 +30,8 @@ class HowToUserVehicleDetailView(generic.DetailView):
         #return context
 
 # Def to create a project
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['user_role'])
 def createProject(request):
     form = VehicleForm()
     #vehicle = HowToUser.objects.get(pk=howToUser_id)
@@ -50,7 +55,8 @@ def createProject(request):
     context = {"form": form}
     return render(request, "how_to_app/howToUser_form.html", context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['user_role'])
 # Def to delete a project
 def deleteProject(request, pk):
     # Retrieve the project object or return a 404 response if it doesn't exist
@@ -72,7 +78,8 @@ def deleteProject(request, pk):
     context = {"project": vehicle}
     return render(request, "how_to_app/project_delete.html", context=context)
 
-
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['user_role'])
 def updateProject(request, pk):
     # Get the project object based on its primary key (project_id)
     vehicle = get_object_or_404(HowToUserVehicle, id=pk)
@@ -106,11 +113,30 @@ def registerPage(request):
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get('username')
-            group = Group.objects.get(name='model')
+            group = Group.objects.get(name='user_role')
             user.groups.add(group)
+            users = HowToUser.objects.create(user=user,)
+            vehicle = HowToUserVehicle.objects.create()
+            users.vehicle = vehicle
+            users.save()
 
             messages.success(request, 'Account was created for ' + username)
             return redirect('login')
         
     context ={'form':form}
     return render(request, 'registration/register.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['user_role'])
+def userPage(request):
+    users = request.user
+    form = StudentForm(instance= student)
+    print('Student', student)
+    portfolio = student.portfolio
+    print(portfolio)
+    if request.method == 'POST':
+        form = StudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+    context = {'portfolios': portfolio, 'form':form}
+    return render(request, 'portfolio_app/user.html', context)
