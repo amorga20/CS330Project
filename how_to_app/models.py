@@ -28,7 +28,7 @@ class HowToUserVehicle(models.Model):
     model = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.model
+        return f"{self.year} {self.make} {self.model}"
     
     def get_absolute_url(self):
         return reverse("vehicle-detail", args=[str(self.id)])

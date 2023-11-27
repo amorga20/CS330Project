@@ -14,8 +14,27 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 def index(request):
 # Render index.html
     vehicles = HowToUserVehicle.objects.all()
+    year = vehicles.filter(year = 2018)
     print("Current Vehicle How To's", vehicles)
+    print("Years", year)
     return render( request, 'how_to_app/index.html')
+
+def car_menu(request):
+    years = HowToUserVehicle.objects.values_list('year', flat=True).distinct()
+    menu_items = []
+
+    for year in years:
+        makes = HowToUserVehicle.objects.filter(year=year).values_list('make', flat=True).distinct()
+        year_menu = {'year': year, 'makes': []}
+
+        for make in makes:
+            models = HowToUserVehicle.objects.filter(year=year, make=make)
+            make_menu = {'make': make, 'models': models}
+            year_menu['makes'].append(make_menu)
+
+        menu_items.append(year_menu)
+
+    return render(request, 'base_template.html', {'menu_items': menu_items})
 
 class HowToUserVehicleListView(generic.ListView):
     model = HowToUserVehicle
@@ -140,3 +159,13 @@ def userPage(request):
             form.save()
     context = {'HowToUserVehicle': vehicle, 'form':form}
     return render(request, 'how_to_app/user.html', context)
+
+def search(request):
+    if request.method == "POST":
+        data = request.POST
+        searched = data.get('searched_term')
+        vehicles = HowToUserVehicle.objects.filter(model__contains=searched)
+
+        return render(request, 'how_to_app/search.html', {'searched':searched, 'vehicles': vehicles})
+    else:
+        return render(request, 'how_to_app/search.html', {})
